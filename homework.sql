@@ -21,15 +21,27 @@ SELECT amount, customer.first_name, customer.last_name
 FROM payment
 JOIN customer
 ON payment.customer_id = customer.customer_id
-WHERE amount > 6.99;
+WHERE amount > 6.99
+ORDER BY amount DESC;
 
 -- see query results above - there are many of them!
 
 -- 3. Show all customers names who have made payments over $175(use
 -- subqueries)
+SELECT first_name, last_name
+FROM customer
+WHERE customer.customer_id IN (
+    SELECT payment.customer_id
+    FROM payment
+    GROUP BY payment.customer_id
+    HAVING SUM(amount) > 175
+    )
+ORDER BY last_name ASC;
 
+-- Tommy Callazo, Eleanor Hunt, Rhonda Kennedy, Peter Menard,
+-- Karl Seal, Clara Shaw, and Marion Snyder
 
-
+-- I'm assuming that we mean aggregate payments over $175
 
 -- 4. List all customers that live in Nepal (use the city
 -- table)
@@ -73,6 +85,33 @@ ORDER BY COUNT(rating) DESC;
 -- above $6.99 (Use Subqueries)
 
 
+SELECT COUNT(customer_id), customer_id
+FROM payment
+GROUP BY payment.customer_id
+ORDER BY COUNT(customer_id) ASC;
+
+---This tells me that no one in the database has
+-- less than 7 transactions, so it's fine that
+-- my query below didn't bring up anything.
+
+
+SELECT first_name, last_name, payment.amount
+FROM customer
+JOIN payment
+ON customer.customer_id = payment.customer_id
+GROUP BY first_name, last_name, payment.amount
+HAVING COUNT(payment.customer_id) = 1 AND amount > 6.99
+ORDER BY customer.last_name;
+
+
+WHERE payment.customer_id IN (
+    SELECT payment.customer_id
+    FROM payment
+    HAVING COUNT(payment_id) = 1 AND amount > 6.99
+);
+
+-- I understand this as customers who have only made one payment
+-- and that payment is > 6.99
 
 
 -- 8. How many free rentals did our stores give
