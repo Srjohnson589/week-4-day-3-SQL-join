@@ -94,25 +94,17 @@ ORDER BY COUNT(customer_id) ASC;
 -- less than 7 transactions, so it's fine that
 -- my query below didn't bring up anything.
 
-
-SELECT first_name, last_name, payment.amount
+SELECT first_name, last_name
 FROM customer
-JOIN payment
-ON customer.customer_id = payment.customer_id
-GROUP BY first_name, last_name, payment.amount
-HAVING COUNT(payment.customer_id) = 1 AND amount > 6.99
-ORDER BY customer.last_name;
-
-
-WHERE payment.customer_id IN (
+WHERE customer.customer_id IN (
     SELECT payment.customer_id
     FROM payment
-    HAVING COUNT(payment_id) = 1 AND amount > 6.99
+    GROUP BY payment.customer_id
+    HAVING COUNT(payment_id) = 1 AND MIN(payment.amount) > 6.99
 );
 
 -- I understand this as customers who have only made one payment
 -- and that payment is > 6.99
-
 
 -- 8. How many free rentals did our stores give
 -- away?
